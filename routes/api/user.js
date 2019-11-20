@@ -55,11 +55,8 @@ router.post("/", [
             user.password = await bcrypt.hash(password, salt);
 
             //saving in database
-            await User.create(user, function (error) {
+            user = await User.create(user);
 
-                if (error)
-                    throw new Error();
-            })
 
 
             //return json webtoken
@@ -69,7 +66,17 @@ router.post("/", [
                 }
             }
 
-            jwt.sign(payload)
+
+            jwt.sign(
+                payload,
+                config.get('jwtSecret'),
+                { expiresIn: 36000 },
+                function (error, token) {
+                    if (error)
+                        throw error;
+
+                    return res.json({ id: user.id, token });
+                })
 
         } catch (err) {
 
