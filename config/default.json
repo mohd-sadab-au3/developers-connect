@@ -1,0 +1,4 @@
+{
+    "mongodbURI": "mongodb+srv://developer-connection:developer-connection@cluster0-qwfq6.mongodb.net/test?retryWrites=true&w=majority",
+    "jwtSecret": "iamajoblessperson"
+}
