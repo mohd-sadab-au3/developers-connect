@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const config = require("config");
 
 //@desc  Post api/user
+//@public Route
 router.post("/", [
 
     check('name', 'Name is required').not().isEmpty(),
@@ -69,13 +70,16 @@ router.post("/", [
 
             jwt.sign(
                 payload,
-                config.get('jwtSecret'),
+                Buffer.from(config.get('jwtSecret'), 'base64').toString('ascii'),
                 { expiresIn: 36000 },
                 function (error, token) {
                     if (error)
                         throw error;
+                    console.log()
+                    console.log(token);
+                    console.log()
 
-                    return res.json({ id: user.id, token });
+                    return res.json({ token });
                 })
 
         } catch (err) {
