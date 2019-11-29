@@ -1,4 +1,6 @@
 {
     "mongodbURI": "mongodb+srv://developer-connection:developer-connection@cluster0-qwfq6.mongodb.net/test?retryWrites=true&w=majority",
-    "jwtSecret": "iamajoblessperson"
+    "jwtSecret": "iamajoblessperson",
+    "githubClientId": "7495b967e10d8e92c0ce",
+    "githubClientSecret": "f5b7c46538eb432ec77dd18ef5d5b76b1a1ede7e"
 }

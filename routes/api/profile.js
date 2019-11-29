@@ -3,6 +3,8 @@ let auth = require('../../middleware/auth');
 let Profile = require('../../models/Profile');
 let router = express.Router();
 const { check, validationResult } = require('express-validator');
+const request = require('request');
+const config = require('config');
 
 
 
@@ -449,6 +451,44 @@ router.put("/education/update/:id", [auth, [
 });
 
 
+//@GRT   Route api/profile/github/:username
+//@desc  Getting Github repo of users
+//@Public
+
+router.get("/github/:username", async (req, res) => {
+
+    try {
+
+        const options = {
+            uri: `https://api.github.com/users/${req.params.username}/repos?
+            per_page=5&sort=created:asc&client_id=${config.get('githubClientId')}
+            &client_secret=${config.get('githubClientSecret')}`,
+            method: 'GET',
+            headers: { 'user-agent': 'node.js' }
+        }
+
+        request(options, (error, response, body) => {
+
+            if (error)
+                console.log(error);
+            //console.log("body", body);
+            //console.log("status", response.statusCode);
+            if (response.statusCode !== 200) {
+                return res.status(404).json([{ msg: "No Github profile found" }]);
+            }
+
+            res.json(JSON.parse(body));
+
+        })
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json([{ msg: "Server Error" }]);
+    }
+
+});
 
 
 
