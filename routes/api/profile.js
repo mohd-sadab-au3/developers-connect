@@ -1,10 +1,12 @@
 let express = require('express');
 let auth = require('../../middleware/auth');
 let Profile = require('../../models/Profile');
+let User = require('../../models/User');
 let router = express.Router();
 const { check, validationResult } = require('express-validator');
 const request = require('request');
 const config = require('config');
+const mongoose = require('mongoose');
 
 
 
@@ -13,15 +15,17 @@ const config = require('config');
 router.get("/me", auth, async (req, res) => {
 
     try {
-        let profile = Profile.findOne({ user: req.user.id }).populate('users', ['name', 'avatar']);
+        let userDetails = await User.findById(req.user.id).select("-password");
+        let profile = await Profile.findOne({ user: req.user.id }).populate('users', ['name', 'gravtar']);
+        console.log("user", userDetails);
 
         if (!profile) {
             return res.status(400).json([{ "msg": "Profile for this user does not exist" }]);
         }
-
-        res.json(profile);
+        res.json({ profile, userDetails });
     } catch (error) {
 
+        console.log(error);
         return res.status(500).json([{ "msg": "Internal Server Error" }]);
     }
 
@@ -155,7 +159,7 @@ router.get("/user/:id", async (req, res) => {
 
     try {
 
-        const profile = await Profile.findOne({ user: req.params.id }).populate('users', ['name', 'avatar']);
+        const profile = await Profile.findOne({ user: req.params.id })
         if (!profile) {
             return res.status(200).json([{ msg: "No Profile Found" }]);
         }
